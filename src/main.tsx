@@ -34,7 +34,6 @@ function ButterflyCursor() {
     let takeoffFromX = x;
     let takeoffFromY = y;
     let inside = false;
-    let lastPointerTime = performance.now();
 
     const clamp = (value: number, min: number, max: number) =>
       Math.max(min, Math.min(max, value));
@@ -50,7 +49,6 @@ function ButterflyCursor() {
       if (event.pointerType === "touch") return;
       targetX = event.clientX;
       targetY = event.clientY;
-      lastPointerTime = performance.now();
 
       if (!inside) {
         inside = true;
@@ -105,7 +103,6 @@ function ButterflyCursor() {
       raf = 0;
       if (!inside || document.visibilityState === "hidden") return;
 
-      const elapsed = now - lastPointerTime;
       let desiredX = targetX;
       let desiredY = targetY;
 
@@ -251,6 +248,7 @@ function App() {
       <section className="hero" id="home" ref={heroRef}>
         <div className="hero-ambience" aria-hidden="true" />
         <div className="hero-grain" aria-hidden="true" />
+        <ButterflyCursor />
         <header className="site-header">
           <a className="wordmark" href="#home" aria-label="Yesu home">YESU<span>°</span></a>
           <nav aria-label="Main navigation">
@@ -276,12 +274,6 @@ function App() {
         <div className="hero-caption"><Sparkles size={13}/> An independent digital practice <span>·</span> 2026</div>
       </section>
 
-
-      <section className="media-note" aria-label="Hero video setup">
-        <span className="media-note-mark" />
-        <p>The scene is waiting for its film.</p>
-        <span>HERO VIDEO · ADD WHEN READY</span>
-      </section>
 
       <section className="process section" id="process">
         <div className="section-kicker">01 / THE APPROACH</div>
@@ -342,14 +334,13 @@ function App() {
         <div className="footer-glow" aria-hidden="true" />
         <div className="section-kicker">04 / THE NEXT THING</div>
         <h2>Have an idea worth<br/><em>bringing to life?</em></h2>
-        <a className="footer-cta" href="mailto:hello@yesuraja.dev">Let's create <ArrowUpRight size={20}/></a>
+        <a className="footer-cta" href="https://www.linkedin.com/in/yesuraja01" target="_blank" rel="noreferrer">Let's create <ArrowUpRight size={20}/></a>
         <div className="footer-bottom">
           <a className="wordmark" href="#home">YESU<span>°</span></a>
-          <div className="footer-links"><a href="https://github.com/yesu166" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/yesuraja01" target="_blank" rel="noreferrer">LinkedIn</a><a href="mailto:hello@yesuraja.dev">Email</a></div>
+          <div className="footer-links"><a href="https://github.com/yesu166" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/yesuraja01" target="_blank" rel="noreferrer">LinkedIn</a><a href="#home">Back to top</a></div>
           <span>© 2026 YESU · MADE WITH INTENTION</span>
         </div>
       </footer>
-      <ButterflyCursor />
     </main>
   );
 }
