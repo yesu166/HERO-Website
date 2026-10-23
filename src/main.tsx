@@ -307,7 +307,7 @@ function App() {
           <video
             ref={videoRef}
             className="hero-video"
-            src={`${import.meta.env.BASE_URL}media/hero.mp4`}
+            src={`${import.meta.env.BASE_URL}media/Character_animation_for_digital_…_20261023075818_2K_upscaled.mp4`}
             muted
             playsInline
             preload="auto"
