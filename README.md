@@ -1,19 +1,19 @@
 # HERO Website
 
-Cinematic portfolio website scaffold for a scroll-driven visual hero and custom butterfly cursor interaction.
+Minimal cinematic portfolio website.
 
 ## Stack
-
 - React + TypeScript + Vite
-- CSS animations and `requestAnimationFrame` pointer smoothing
-- Optional video background added later at `public/media/hero.mp4`
-- Optional transparent butterfly PNG at `public/media/butterfly.png`
+- Vanilla CSS motion and `requestAnimationFrame` pointer smoothing
+- No AI widgets or in-between generation UI.
 
-## Run locally
+## Hero assets
+- Put the final cinematic video at `public/media/hero.mp4` (we will hook it up when supplied).
+- Optional butterfly artwork: `public/media/butterfly.png`.
+- Current cursor is drawn as a delicate inline SVG so the black hero works immediately.
 
-```bash
-npm install
-npm run dev
-```
+## Run
+`npm install`
+`npm run dev`
 
-The repository started empty. Source files will form the minimal portfolio foundation; no AI UI or third-party runtime is embedded in the site.
+The repository started empty and contains the initial portfolio scaffold.
