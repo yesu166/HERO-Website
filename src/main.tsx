@@ -230,20 +230,6 @@ function ButterflyCursor() {
 }
 
 function App() {
-  const heroRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const onMove = (event: PointerEvent) => {
-      const rect = hero.getBoundingClientRect();
-      hero.style.setProperty("--spot-x", `${event.clientX - rect.left}px`);
-      hero.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
-    };
-    hero.addEventListener("pointermove", onMove);
-    return () => hero.removeEventListener("pointermove", onMove);
-  }, []);
-
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const elements = document.querySelectorAll<HTMLElement>(
@@ -268,7 +254,7 @@ function App() {
 
   return (
     <main>
-      <section className="hero" id="home" ref={heroRef}>
+      <section className="hero" id="home">
         <div className="hero-ambience" aria-hidden="true" />
         <div className="hero-grain" aria-hidden="true" />
         <ButterflyCursor />
