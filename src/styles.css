@@ -11,13 +11,13 @@ button:focus-visible,a:focus-visible{outline:2px solid #e8ceff;outline-offset:5p
 main{overflow:clip;background:#07060d}
 .hero{height:230svh;min-height:1500px;position:relative;background:#07060d;--scroll-progress:0;--hero-ui-opacity:1}
 .hero-sticky-stage{height:100svh;min-height:650px;position:sticky;top:0;isolation:isolate;overflow:hidden;background:#07060d;cursor:none}
-.hero-video{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:center center;opacity:1;filter:saturate(.94) contrast(1.02);transition:opacity .45s ease}
+.hero-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center center;opacity:1;filter:saturate(.94) contrast(1.02);transition:opacity .45s ease}
 .hero-video.is-ready{opacity:1}
 .hero-video.is-unavailable{display:none}
-.hero-ambience{position:absolute;inset:0;z-index:-3;background:#07060d;pointer-events:none}
+.hero-ambience{position:absolute;inset:0;z-index:-1;background:#07060d;pointer-events:none}
 .hero-ambience:after{content:none}
 .hero-sticky-stage:after{content:"";position:absolute;z-index:4;inset:12px;border:1px solid rgba(244,232,255,.085);border-radius:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.055);pointer-events:none}
-.hero-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");animation:grain-drift 12s steps(6) infinite}
+.hero-grain{position:absolute;inset:-50%;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");animation:grain-drift 12s steps(6) infinite}
 @keyframes grain-drift{0%{transform:translate(0,0)}20%{transform:translate(2%,-1%)}40%{transform:translate(-1%,2%)}60%{transform:translate(1%,1%)}80%{transform:translate(-2%,-1%)}100%{transform:translate(0,0)}}
 .site-header{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:30px 5vw;opacity:var(--hero-ui-opacity,1);transition:opacity .2s linear}
 .wordmark{font:600 14px 'Manrope',sans-serif;letter-spacing:.42em;color:#f3ecff;white-space:nowrap}
