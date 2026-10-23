@@ -6,8 +6,6 @@ type FlightState = "following" | "landing" | "perched" | "taking-off";
 
 function ButterflyCursor() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const wingLeftRef = useRef<SVGPathElement>(null);
-  const wingRightRef = useRef<SVGPathElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -210,8 +208,8 @@ function ButterflyCursor() {
           </filter>
         </defs>
         <g filter="url(#butterflyGlow)" stroke="url(#vein)" strokeWidth="1.15" strokeLinejoin="round">
-          <path ref={wingLeftRef} className="wing wing-left" d="M79 78 C64 51 29 20 15 33 C3 47 23 76 48 91 C61 99 72 91 79 82 Z" fill="url(#wingL)" />
-          <path ref={wingRightRef} className="wing wing-right" d="M81 78 C96 42 122 13 139 22 C155 33 143 67 118 86 C104 97 89 91 81 82 Z" fill="url(#wingR)" />
+          <path className="wing wing-left" d="M79 78 C64 51 29 20 15 33 C3 47 23 76 48 91 C61 99 72 91 79 82 Z" fill="url(#wingL)" />
+          <path className="wing wing-right" d="M81 78 C96 42 122 13 139 22 C155 33 143 67 118 86 C104 97 89 91 81 82 Z" fill="url(#wingR)" />
           <path className="wing wing-lower-left" d="M78 82 C57 87 41 97 43 116 C46 135 65 133 79 98 Z" fill="url(#wingL)" opacity=".9" />
           <path className="wing wing-lower-right" d="M83 82 C101 88 119 98 116 114 C112 133 95 129 81 98 Z" fill="url(#wingR)" opacity=".9" />
           <g fill="none" strokeWidth=".7" opacity=".68">
