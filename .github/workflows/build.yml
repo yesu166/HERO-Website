@@ -21,5 +21,11 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Type-check and build
         run: npm run build
-      - name: Verify hero video is included in the production output
-        run: test -s dist/media/hero.mp4
+      - name: Verify hero JPEG sequence is included in the production output
+        run: |
+          test -s dist/media/hero.mp4
+          test -s dist/frames/frame-0001.jpg
+          test -s dist/frames/frame-0240.jpg
+          count="$(find dist/frames -maxdepth 1 -type f -name 'frame-*.jpg' | wc -l)"
+          echo "Production frame count: $count"
+          test "$count" -eq 240

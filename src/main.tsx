@@ -235,46 +235,119 @@ function ButterflyCursor() {
 
 function App() {
   const heroRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const frameCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const hero = heroRef.current;
-    const video = videoRef.current;
-    if (!hero || !video) return;
+    const canvas = frameCanvasRef.current;
+    if (!hero || !canvas) return;
 
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) return;
+
+    const frameCount = 240;
+    const frames: Array<HTMLImageElement | null> = new Array(frameCount).fill(null);
+    const failedFrames = new Set<number>();
+    let currentFrame = 0;
     let raf = 0;
+    let sequenceReady = false;
+    let alive = true;
+
+    const resizeCanvas = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(bounds.width * pixelRatio));
+      const height = Math.max(1, Math.round(bounds.height * pixelRatio));
+      if (canvas.width !== width) canvas.width = width;
+      if (canvas.height !== height) canvas.height = height;
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+    };
+
+    const drawFrame = (image: HTMLImageElement) => {
+      if (!alive || !image.complete || !image.naturalWidth) return;
+      resizeCanvas();
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const scale = Math.max(canvasWidth / image.naturalWidth, canvasHeight / image.naturalHeight);
+      const width = image.naturalWidth * scale;
+      const height = image.naturalHeight * scale;
+      context.fillStyle = "#07060d";
+      context.fillRect(0, 0, canvasWidth, canvasHeight);
+      context.drawImage(image, (canvasWidth - width) / 2, (canvasHeight - height) / 2, width, height);
+      sequenceReady = true;
+      canvas.classList.add("is-ready");
+    };
+
+    const trimCache = () => {
+      const low = Math.max(0, currentFrame - 10);
+      const high = Math.min(frameCount - 1, currentFrame + 14);
+      frames.forEach((image, index) => {
+        if (!image || (index >= low && index <= high)) return;
+        if (image.complete) frames[index] = null;
+      });
+    };
+
+    const loadFrame = (index: number) => {
+      if (index < 0 || index >= frameCount || frames[index] || failedFrames.has(index)) return;
+      const image = new Image();
+      image.decoding = "async";
+      frames[index] = image;
+      image.onload = () => {
+        if (!alive || frames[index] !== image) return;
+        if (index === currentFrame) drawFrame(image);
+        trimCache();
+      };
+      image.onerror = () => {
+        if (frames[index] === image) frames[index] = null;
+        failedFrames.add(index);
+      };
+      image.src = `${import.meta.env.BASE_URL}frames/frame-${String(index + 1).padStart(4, "0")}.jpg`;
+    };
+
     const updateScrollFrame = () => {
       raf = 0;
       const stickyStage = hero.querySelector<HTMLElement>(".hero-sticky-stage");
       const travel = Math.max(1, hero.offsetHeight - (stickyStage?.offsetHeight ?? window.innerHeight));
       const rect = hero.getBoundingClientRect();
       const progress = Math.max(0, Math.min(1, -rect.top / travel));
-      const hasVideo = video.readyState >= 1 && Number.isFinite(video.duration) && video.duration > 0 && !video.classList.contains("is-unavailable");
+      currentFrame = Math.max(0, Math.min(frameCount - 1, Math.round(progress * (frameCount - 1))));
       hero.style.setProperty("--scroll-progress", String(progress));
-      hero.style.setProperty("--hero-ui-opacity", String(hasVideo ? Math.max(0, 1 - progress * 1.4) : 1));
+      hero.style.setProperty("--hero-ui-opacity", String(sequenceReady ? Math.max(0, 1 - progress * 1.4) : 1));
 
-      if (hasVideo) {
-        const targetTime = progress * Math.max(0, video.duration - 0.04);
-        if (Math.abs(video.currentTime - targetTime) > 0.045) {
-          try { video.currentTime = targetTime; } catch { /* Wait for browser metadata/seek readiness. */ }
-        }
-      }
+      const image = frames[currentFrame];
+      if (image?.complete && image.naturalWidth > 0) drawFrame(image);
+      else loadFrame(currentFrame);
+
+      // Keep a small buffer ahead of the scroll position and behind it for reverse scrolling.
+      loadFrame(currentFrame - 1);
+      loadFrame(currentFrame + 1);
+      loadFrame(currentFrame + 2);
+      loadFrame(currentFrame + 3);
+      trimCache();
     };
+
     const scheduleUpdate = () => {
       if (!raf) raf = window.requestAnimationFrame(updateScrollFrame);
     };
-    const metadataReady = () => scheduleUpdate();
 
+    loadFrame(0);
+    for (let index = 1; index <= 5; index += 1) loadFrame(index);
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
-    video.addEventListener("loadedmetadata", metadataReady);
     scheduleUpdate();
 
     return () => {
+      alive = false;
       window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
-      video.removeEventListener("loadedmetadata", metadataReady);
       if (raf) window.cancelAnimationFrame(raf);
+      frames.forEach((image) => {
+        if (image && !image.complete) {
+          image.onload = null;
+          image.onerror = null;
+        }
+      });
     };
   }, []);
 
@@ -304,16 +377,10 @@ function App() {
     <main>
       <section className="hero" id="home" ref={heroRef}>
         <div className="hero-sticky-stage">
-          <video
-            ref={videoRef}
+          <canvas
+            ref={frameCanvasRef}
             className="hero-video"
-            src={`${import.meta.env.BASE_URL}media/hero.mp4`}
-            muted
-            playsInline
-            preload="auto"
             aria-hidden="true"
-            onLoadedData={(event) => event.currentTarget.classList.add("is-ready")}
-            onError={(event) => event.currentTarget.classList.add("is-unavailable")}
           />
           <div className="hero-ambience" aria-hidden="true" />
           <div className="hero-grain" aria-hidden="true" />
