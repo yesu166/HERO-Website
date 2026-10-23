@@ -10,9 +10,9 @@ button:focus-visible,a:focus-visible{outline:2px solid #e8ceff;outline-offset:5p
 ::selection{background:rgba(198,155,255,.4);color:white}
 main{overflow:clip;background:#07060d}
 .hero{height:100svh;min-height:650px;position:relative;isolation:isolate;overflow:hidden;background:#07060d;cursor:none}
-.hero-ambience{position:absolute;inset:0;z-index:-3;background:radial-gradient(ellipse 70% 65% at 72% 34%,rgba(65,44,100,.15),transparent 70%),radial-gradient(ellipse 60% 60% at 82% 78%,rgba(102,43,110,.09),transparent 75%),#07060d}
-.hero-ambience:after{content:"";position:absolute;inset:0;background:radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%),rgba(191,149,255,.075),transparent 72%);pointer-events:none}
-.hero-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");animation:grain-drift 12s steps(6) infinite}
+.hero-ambience{position:absolute;inset:0;z-index:-3;background:#07060d}
+.hero-ambience:after{content:none}
+.hero-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");animation:grain-drift 12s steps(6) infinite}
 @keyframes grain-drift{0%{transform:translate(0,0)}20%{transform:translate(2%,-1%)}40%{transform:translate(-1%,2%)}60%{transform:translate(1%,1%)}80%{transform:translate(-2%,-1%)}100%{transform:translate(0,0)}}
 .site-header{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:38px 5vw}
 .wordmark{font:600 14px 'Manrope',sans-serif;letter-spacing:.42em;color:#f3ecff;white-space:nowrap}
