@@ -152,7 +152,8 @@ function ButterflyCursor() {
       const scale = state === "landing" ? 1 - Math.sin(clamp((now - landStart) / 560, 0, 1) * Math.PI) * 0.04 : 1;
 
       root.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${lastAngle}deg) scale(${scale})`;
-      root.style.setProperty("--flap", `${flap}deg`);
+      root.style.setProperty("--flap-left", `${flap}deg`);
+      root.style.setProperty("--flap-right", `${-flap}deg`);
       previousX = x;
       previousY = y;
 
@@ -241,6 +242,28 @@ function App() {
     };
     hero.addEventListener("pointermove", onMove);
     return () => hero.removeEventListener("pointermove", onMove);
+  }, []);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const elements = document.querySelectorAll<HTMLElement>(
+      ".section-kicker, .section h2, .section-lead, .process-step, .project, .experiment-list a, .footer-cta"
+    );
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-revealed");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: "0px 0px -35px 0px" });
+
+    elements.forEach((element, index) => {
+      element.classList.add("reveal-item");
+      element.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 65}ms`);
+      observer.observe(element);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   return (
