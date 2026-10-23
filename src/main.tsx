@@ -245,7 +245,6 @@ function App() {
     const frameCount = 240;
     const cache = new Map<number, HTMLImageElement>();
     const failedFrames = new Set<number>();
-    cache.set(0, displayImage);
 
     let currentFrame = 0;
     let lastDisplayedFrame = 0;
