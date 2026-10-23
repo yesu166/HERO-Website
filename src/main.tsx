@@ -157,9 +157,13 @@ function ButterflyCursor() {
       previousX = x;
       previousY = y;
 
-      if (state !== "perched" || !reducedMotion) {
-        raf = requestAnimationFrame(tick);
-      }
+      const remaining = Math.hypot(targetX - x, targetY - y);
+      const continueAnimation =
+        state === "landing" ||
+        state === "taking-off" ||
+        (state === "following" && remaining > 0.35) ||
+        (state === "perched" && !reducedMotion);
+      if (continueAnimation) raf = requestAnimationFrame(tick);
     }
 
     const hero = document.querySelector<HTMLElement>(".hero");
