@@ -24,8 +24,11 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Verify FFmpeg
-        run: ffmpeg -version
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version
 
       - name: Extract 30 fps JPEG frames
         shell: bash
