@@ -151,9 +151,9 @@ function ButterflyCursor() {
       const flap = reducedMotion ? 0 : Math.sin(now / 78) * 5.5 * clamp(speed / 3 + 0.2, 0.2, 1);
       const scale = state === "landing" ? 1 - Math.sin(clamp((now - landStart) / 560, 0, 1) * Math.PI) * 0.04 : 1;
 
-      root.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${lastAngle}deg) scale(${scale})`;
-      root.style.setProperty("--flap-left", `${flap}deg`);
-      root.style.setProperty("--flap-right", `${-flap}deg`);
+      root!.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${lastAngle}deg) scale(${scale})`;
+      root!.style.setProperty("--flap-left", `${flap}deg`);
+      root!.style.setProperty("--flap-right", `${-flap}deg`);
       previousX = x;
       previousY = y;
 
