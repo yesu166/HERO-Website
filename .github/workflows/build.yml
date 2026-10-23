@@ -21,3 +21,5 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Type-check and build
         run: npm run build
+      - name: Verify hero video is included in the production output
+        run: test -s dist/media/hero.mp4
