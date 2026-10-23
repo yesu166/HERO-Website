@@ -276,6 +276,13 @@ function App() {
         <div className="hero-caption"><Sparkles size={13}/> An independent digital practice <span>·</span> 2026</div>
       </section>
 
+
+      <section className="media-note" aria-label="Hero video setup">
+        <span className="media-note-mark" />
+        <p>The scene is waiting for its film.</p>
+        <span>HERO VIDEO · ADD WHEN READY</span>
+      </section>
+
       <section className="process section" id="process">
         <div className="section-kicker">01 / THE APPROACH</div>
         <h2>A little wonder.<br/><em>A lot of intention.</em></h2>
