@@ -245,13 +245,15 @@ function App() {
     let raf = 0;
     const updateScrollFrame = () => {
       raf = 0;
-      const travel = Math.max(1, hero.offsetHeight - window.innerHeight);
+      const stickyStage = hero.querySelector<HTMLElement>(".hero-sticky-stage");
+      const travel = Math.max(1, hero.offsetHeight - (stickyStage?.offsetHeight ?? window.innerHeight));
       const rect = hero.getBoundingClientRect();
       const progress = Math.max(0, Math.min(1, -rect.top / travel));
+      const hasVideo = video.readyState >= 1 && Number.isFinite(video.duration) && video.duration > 0 && !video.classList.contains("is-unavailable");
       hero.style.setProperty("--scroll-progress", String(progress));
-      hero.style.setProperty("--hero-ui-opacity", String(Math.max(0, 1 - progress * 1.4)));
+      hero.style.setProperty("--hero-ui-opacity", String(hasVideo ? Math.max(0, 1 - progress * 1.4) : 1));
 
-      if (video.readyState >= 1 && Number.isFinite(video.duration) && video.duration > 0) {
+      if (hasVideo) {
         const targetTime = progress * Math.max(0, video.duration - 0.04);
         if (Math.abs(video.currentTime - targetTime) > 0.045) {
           try { video.currentTime = targetTime; } catch { /* Wait for browser metadata/seek readiness. */ }
