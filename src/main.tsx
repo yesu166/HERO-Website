@@ -84,7 +84,7 @@ function ButterflyCursor() {
     };
 
     const click = (event: MouseEvent) => {
-      const hero = document.querySelector<HTMLElement>(".hero");
+      const hero = document.querySelector<HTMLElement>(".hero-sticky-stage");
       if (!hero || !hero.contains(event.target as Node)) return;
       const rect = hero.getBoundingClientRect();
       landFromX = x;
@@ -230,6 +230,48 @@ function ButterflyCursor() {
 }
 
 function App() {
+  const heroRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    const video = videoRef.current;
+    if (!hero || !video) return;
+
+    let raf = 0;
+    const updateScrollFrame = () => {
+      raf = 0;
+      const travel = Math.max(1, hero.offsetHeight - window.innerHeight);
+      const rect = hero.getBoundingClientRect();
+      const progress = Math.max(0, Math.min(1, -rect.top / travel));
+      hero.style.setProperty("--scroll-progress", String(progress));
+      hero.style.setProperty("--hero-ui-opacity", String(Math.max(0, 1 - progress * 1.4)));
+
+      if (video.readyState >= 1 && Number.isFinite(video.duration) && video.duration > 0) {
+        const targetTime = progress * Math.max(0, video.duration - 0.04);
+        if (Math.abs(video.currentTime - targetTime) > 0.045) {
+          try { video.currentTime = targetTime; } catch { /* Wait for browser metadata/seek readiness. */ }
+        }
+      }
+    };
+    const scheduleUpdate = () => {
+      if (!raf) raf = window.requestAnimationFrame(updateScrollFrame);
+    };
+    const metadataReady = () => scheduleUpdate();
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    video.addEventListener("loadedmetadata", metadataReady);
+    scheduleUpdate();
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      video.removeEventListener("loadedmetadata", metadataReady);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const elements = document.querySelectorAll<HTMLElement>(
@@ -254,10 +296,22 @@ function App() {
 
   return (
     <main>
-      <section className="hero" id="home">
-        <div className="hero-ambience" aria-hidden="true" />
-        <div className="hero-grain" aria-hidden="true" />
-        <ButterflyCursor />
+      <section className="hero" id="home" ref={heroRef}>
+        <div className="hero-sticky-stage">
+          <video
+            ref={videoRef}
+            className="hero-video"
+            src="/media/hero.mp4"
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+            onLoadedData={(event) => event.currentTarget.classList.add("is-ready")}
+            onError={(event) => event.currentTarget.classList.add("is-unavailable")}
+          />
+          <div className="hero-ambience" aria-hidden="true" />
+          <div className="hero-grain" aria-hidden="true" />
+          <ButterflyCursor />
         <header className="site-header">
           <a className="wordmark" href="#home" aria-label="Yesu home">YESU<span>°</span></a>
           <nav aria-label="Main navigation">
@@ -280,7 +334,8 @@ function App() {
         </div>
 
         <a className="scroll-hint" href="#process"><span className="scroll-rule" /><span>SCROLL TO EXPLORE</span><MoveDown size={13}/></a>
-        <div className="hero-caption"><Sparkles size={13}/> An independent digital practice <span>·</span> 2026</div>
+          <div className="hero-caption"><Sparkles size={13}/> An independent digital practice <span>·</span> 2026</div>
+        </div>
       </section>
 
 
