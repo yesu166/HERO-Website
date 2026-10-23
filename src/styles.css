@@ -37,13 +37,13 @@ main{overflow:clip;background:#07060d}
 @keyframes arrow-drift{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
 .hero-caption{position:absolute;z-index:3;right:5vw;bottom:35px;display:flex;align-items:center;gap:9px;font-size:10px;letter-spacing:.08em;color:rgba(221,209,241,.42)}
 .hero-caption svg{color:#cfb1ff}
-.butterfly-cursor{--flap:0deg;position:fixed;top:0;left:0;z-index:1;width:74px;height:74px;pointer-events:none;opacity:0;will-change:transform,opacity;transform:translate3d(-50%,-50%,0);mix-blend-mode:screen;filter:drop-shadow(0 0 9px rgba(217,174,255,.46));transition:opacity .24s ease}
+.butterfly-cursor{--flap-left:0deg;--flap-right:0deg;position:fixed;top:0;left:0;z-index:1;width:74px;height:74px;pointer-events:none;opacity:0;will-change:transform,opacity;transform:translate3d(-50%,-50%,0);mix-blend-mode:screen;filter:drop-shadow(0 0 9px rgba(217,174,255,.46));transition:opacity .24s ease}
 .butterfly-svg{position:relative;z-index:2;width:100%;height:100%;overflow:visible}
-.wing{transform-box:fill-box;transform-origin:50% 80%;animation:wing-breathe 1.15s ease-in-out infinite alternate}
+.wing{transform-box:fill-box;transform-origin:50% 80%;transform:rotateY(var(--flap-left,0deg));animation:wing-breathe 1.15s ease-in-out infinite alternate}
 .wing-left{animation-delay:-.15s;transform-origin:100% 80%}
-.wing-right{transform-origin:0% 80%;animation-delay:-.75s}
-.wing-lower-left{animation-duration:1.2s;animation-delay:-.2s}
-.wing-lower-right{animation-duration:1.2s;animation-delay:-.7s}
+.wing-right{transform-origin:0% 80%;transform:rotateY(var(--flap-right,0deg));animation-delay:-.75s}
+.wing-lower-left{transform:rotateY(var(--flap-left,0deg));animation-duration:1.2s;animation-delay:-.2s}
+.wing-lower-right{transform:rotateY(var(--flap-right,0deg));animation-duration:1.2s;animation-delay:-.7s}
 @keyframes wing-breathe{0%{scale:1 1}100%{scale:.94 .86}}
 .butterfly-dust{opacity:.7;animation:dust-pulse 2.4s ease-in-out infinite alternate}
 @keyframes dust-pulse{from{opacity:.22}to{opacity:.85}}
@@ -117,3 +117,9 @@ main{overflow:clip;background:#07060d}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.hero{cursor:auto}.butterfly-cursor{display:none!important}}
 
 
+
+
+/* Restrained reveals add rhythm without turning the portfolio into a template. */
+.reveal-item{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .85s cubic-bezier(.2,.75,.2,1);transition-delay:var(--reveal-delay,0ms)}
+.reveal-item.is-revealed{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.reveal-item,.reveal-item.is-revealed{opacity:1;transform:none;transition:none}}
