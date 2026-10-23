@@ -235,74 +235,69 @@ function ButterflyCursor() {
 
 function App() {
   const heroRef = useRef<HTMLElement>(null);
-  const frameCanvasRef = useRef<HTMLCanvasElement>(null);
+  const frameImageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const hero = heroRef.current;
-    const canvas = frameCanvasRef.current;
-    if (!hero || !canvas) return;
-
-    const context = canvas.getContext("2d", { alpha: false });
-    if (!context) return;
+    const displayImage = frameImageRef.current;
+    if (!hero || !displayImage) return;
 
     const frameCount = 240;
-    const frames: Array<HTMLImageElement | null> = new Array(frameCount).fill(null);
+    const cache = new Map<number, HTMLImageElement>();
     const failedFrames = new Set<number>();
+    cache.set(0, displayImage);
+
     let currentFrame = 0;
+    let lastDisplayedFrame = 0;
     let raf = 0;
-    let sequenceReady = false;
     let alive = true;
 
-    const resizeCanvas = () => {
-      const bounds = canvas.getBoundingClientRect();
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.max(1, Math.round(bounds.width * pixelRatio));
-      const height = Math.max(1, Math.round(bounds.height * pixelRatio));
-      if (canvas.width !== width) canvas.width = width;
-      if (canvas.height !== height) canvas.height = height;
-      context.imageSmoothingEnabled = true;
-      context.imageSmoothingQuality = "high";
-    };
+    const frameUrl = (index: number) =>
+      `${import.meta.env.BASE_URL}frames/frame-${String(index + 1).padStart(4, "0")}.jpg`;
 
-    const drawFrame = (image: HTMLImageElement) => {
-      if (!alive || !image.complete || !image.naturalWidth) return;
-      resizeCanvas();
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
-      const scale = Math.max(canvasWidth / image.naturalWidth, canvasHeight / image.naturalHeight);
-      const width = image.naturalWidth * scale;
-      const height = image.naturalHeight * scale;
-      context.fillStyle = "#07060d";
-      context.fillRect(0, 0, canvasWidth, canvasHeight);
-      context.drawImage(image, (canvasWidth - width) / 2, (canvasHeight - height) / 2, width, height);
-      sequenceReady = true;
-      canvas.classList.add("is-ready");
+    const showFrame = (index: number, image: HTMLImageElement) => {
+      if (!alive || !image.complete || image.naturalWidth === 0) return;
+      if (index !== lastDisplayedFrame && displayImage.src !== image.src) {
+        displayImage.src = image.src;
+      }
+      lastDisplayedFrame = index;
+      displayImage.dataset.frame = String(index + 1);
+      displayImage.classList.add("is-ready");
     };
 
     const trimCache = () => {
-      const low = Math.max(0, currentFrame - 10);
-      const high = Math.min(frameCount - 1, currentFrame + 14);
-      frames.forEach((image, index) => {
-        if (!image || (index >= low && index <= high)) return;
-        if (image.complete) frames[index] = null;
-      });
+      const low = Math.max(0, currentFrame - 8);
+      const high = Math.min(frameCount - 1, currentFrame + 12);
+      for (const [index, image] of cache) {
+        if (index === 0 || (index >= low && index <= high) || !image.complete) continue;
+        cache.delete(index);
+      }
     };
 
     const loadFrame = (index: number) => {
-      if (index < 0 || index >= frameCount || frames[index] || failedFrames.has(index)) return;
+      if (index < 0 || index >= frameCount || failedFrames.has(index)) return;
+      const existing = cache.get(index);
+      if (existing) {
+        if (existing.complete && existing.naturalWidth > 0 && index === currentFrame) {
+          showFrame(index, existing);
+        }
+        return;
+      }
+
       const image = new Image();
       image.decoding = "async";
-      frames[index] = image;
+      cache.set(index, image);
       image.onload = () => {
-        if (!alive || frames[index] !== image) return;
-        if (index === currentFrame) drawFrame(image);
+        if (!alive || cache.get(index) !== image) return;
+        if (index === currentFrame) showFrame(index, image);
         trimCache();
       };
       image.onerror = () => {
-        if (frames[index] === image) frames[index] = null;
+        if (cache.get(index) === image) cache.delete(index);
         failedFrames.add(index);
+        console.error(`Hero frame failed to load: ${frameUrl(index)}`);
       };
-      image.src = `${import.meta.env.BASE_URL}frames/frame-${String(index + 1).padStart(4, "0")}.jpg`;
+      image.src = frameUrl(index);
     };
 
     const updateScrollFrame = () => {
@@ -312,18 +307,19 @@ function App() {
       const rect = hero.getBoundingClientRect();
       const progress = Math.max(0, Math.min(1, -rect.top / travel));
       currentFrame = Math.max(0, Math.min(frameCount - 1, Math.round(progress * (frameCount - 1))));
-      hero.style.setProperty("--scroll-progress", String(progress));
-      hero.style.setProperty("--hero-ui-opacity", String(sequenceReady ? Math.max(0, 1 - progress * 1.4) : 1));
 
-      const image = frames[currentFrame];
-      if (image?.complete && image.naturalWidth > 0) drawFrame(image);
+      hero.style.setProperty("--scroll-progress", String(progress));
+      hero.style.setProperty("--hero-ui-opacity", String(Math.max(0, 1 - progress * 1.4)));
+
+      const current = cache.get(currentFrame);
+      if (current?.complete && current.naturalWidth > 0) showFrame(currentFrame, current);
       else loadFrame(currentFrame);
 
-      // Keep a small buffer ahead of the scroll position and behind it for reverse scrolling.
-      loadFrame(currentFrame - 1);
-      loadFrame(currentFrame + 1);
-      loadFrame(currentFrame + 2);
-      loadFrame(currentFrame + 3);
+      // Preload nearby frames in both directions for smooth forward/backward scrubbing.
+      for (let offset = 1; offset <= 5; offset += 1) {
+        loadFrame(currentFrame - offset);
+        loadFrame(currentFrame + offset);
+      }
       trimCache();
     };
 
@@ -331,8 +327,11 @@ function App() {
       if (!raf) raf = window.requestAnimationFrame(updateScrollFrame);
     };
 
-    loadFrame(0);
-    for (let index = 1; index <= 5; index += 1) loadFrame(index);
+    displayImage.addEventListener("load", () => {
+      if (currentFrame === 0) displayImage.classList.add("is-ready");
+    });
+
+    for (let index = 1; index <= 8; index += 1) loadFrame(index);
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     scheduleUpdate();
@@ -342,11 +341,10 @@ function App() {
       window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
       if (raf) window.cancelAnimationFrame(raf);
-      frames.forEach((image) => {
-        if (image && !image.complete) {
-          image.onload = null;
-          image.onerror = null;
-        }
+      cache.forEach((image, index) => {
+        if (index === 0 || image.complete) return;
+        image.onload = null;
+        image.onerror = null;
       });
     };
   }, []);
@@ -377,10 +375,14 @@ function App() {
     <main>
       <section className="hero" id="home" ref={heroRef}>
         <div className="hero-sticky-stage">
-          <canvas
-            ref={frameCanvasRef}
-            className="hero-video"
+          <img
+            ref={frameImageRef}
+            className="hero-video hero-frame-image is-ready"
+            src={`${import.meta.env.BASE_URL}frames/frame-0001.jpg`}
+            alt=""
             aria-hidden="true"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="hero-ambience" aria-hidden="true" />
           <div className="hero-grain" aria-hidden="true" />
