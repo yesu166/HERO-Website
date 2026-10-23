@@ -1,30 +1,26 @@
 # HERO Website
 
-A minimal cinematic portfolio with a scroll-scrubbed hero film, restrained glass UI, and an animated glasswing butterfly cursor.
+A cinematic portfolio with a scroll-controlled hero film, restrained glass UI, and a custom glasswing butterfly cursor.
 
-## Stack
+## Included now
 
-- React + TypeScript + Vite
-- CSS glass surfaces, atmospheric typography, and scroll reveals
-- Pointer-smoothing with `requestAnimationFrame`
-- Native HTML video seeking for scroll-controlled playback
-- No AI generator UI or unrelated widgets inside the portfolio
+- React + TypeScript + Vite portfolio shell.
+- 8-second H.264 hero video committed under `public/media/`.
+- Native video playback scrubbed from scroll progress.
+- Black fallback if video metadata cannot load.
+- Warm cream-gold light around the butterfly cursor, soft wing motion, smooth tracking, click-to-land and take-off.
+- Glass navigation, subtle atmospheric grain, process, selected work, experiments, and footer sections.
+- Responsive layouts and reduced-motion handling.
 
-## Add the 8-second hero video
+## Hero video
 
-Put the final clip here:
+The current clip is stored at:
 
-`public/media/hero.mp4`
+`public/media/Character_animation_for_digital_…_20261023075818_2K_upscaled.mp4`
 
-The hero video is intentionally a background layer, not an embedded video player. It fills the sticky viewport, stays muted, and its playback time maps to the hero section's scroll progress. The website remains black if the video file is not present.
+It is loaded by the hero as a background layer. Its 8-second timeline maps to the hero's scroll progress; scrolling back scrubs the clip in reverse. The video remains separate from the website typography and UI. We do not need to isolate the character from the landscape for this first version because the source clip already composites them together.
 
-**Recommended export for smooth scrubbing:** MP4 (H.264), 1920×1080, 24–30 fps, muted, fast-start metadata, and frequent keyframes. Keep the clip compressed enough to load promptly. Do not add typography or UI into the video; the website renders those separately.
-
-If the character and landscape have already been rendered together into one clip, keep them together for now. A separate character layer is only needed for truly independent character motion or compositing.
-
-## Butterfly cursor
-
-The custom butterfly follows the pointer with eased movement, gentle direction tilt, a warm cream-gold aura, subtle wing motion, and click-to-land / perched / take-off states. It is an inline SVG for now, so it works before the final external transparent butterfly asset is ready. The effect is restricted to the visible hero, does not intercept clicks, and respects reduced-motion preferences.
+For a future replacement, preserve the existing filename or update the `src` in `src/main.tsx`. Recommended export: H.264 MP4, 16:9, 24–30 fps, muted, frequent keyframes for smooth seeking, and optimized for web delivery.
 
 ## Run locally
 
@@ -33,10 +29,16 @@ npm install
 npm run dev
 ```
 
-## Build
+Build:
 
 ```bash
 npm run build
 ```
 
-The repository began empty; the current files provide the portfolio foundation and ready-to-fill video path.
+GitHub Pages build:
+
+```bash
+npm run build -- --mode github-pages
+```
+
+GitHub Pages deployment is configured in `.github/workflows/deploy-pages.yml`. The first deployment requires Pages to be enabled for this repository with **Settings → Pages → Build and deployment → Source: GitHub Actions**. The workflow cannot enable that repository setting because the connected GitHub Actions token lacks the required repository administration permission.
