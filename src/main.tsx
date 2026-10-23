@@ -159,7 +159,7 @@ function ButterflyCursor() {
       previousX = x;
       previousY = y;
 
-      if (state !== "perched" || elapsed < 1200 || !reducedMotion) {
+      if (state !== "perched" || !reducedMotion) {
         raf = requestAnimationFrame(tick);
       }
     }
