@@ -1,7 +1,5 @@
-# Hero media assets
+# Hero media
 
-Place your generated cinematic hero video at `public/media/hero.mp4` when ready.
+The 8-second cinematic clip is committed in this folder as `Character_animation_for_digital_…_20261023075818_2K_upscaled.mp4`.
 
-Place your cleaned transparent butterfly cutout at `public/media/butterfly.png` if you want to use that image rather than the current lightweight inline SVG butterfly.
-
-The page currently uses a pure black hero background while the real video is pending.
+The hero video is scrubbed by scroll progress and rendered behind the website UI. To replace it, keep the filename unchanged or update the reference in `src/main.tsx`.
