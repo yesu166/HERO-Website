@@ -25,7 +25,7 @@ const products = [
     description:
       "Turn a goal into a plan, coordinate your tools, and get useful work done with you in control.",
     icon: Orbit,
-    status: "Exploring",
+    status: "In development",
     className: "agent",
   },
   {
@@ -35,7 +35,7 @@ const products = [
     description:
       "A focused space to move from a rough idea to a working prototype without losing the thread.",
     icon: Layers3,
-    status: "On the roadmap",
+    status: "Concept",
     className: "build",
   },
   {
@@ -45,7 +45,7 @@ const products = [
     description:
       "A future layer for connecting models, apps, and devices without stitching every workflow together by hand.",
     icon: AudioWaveform,
-    status: "On the roadmap",
+    status: "Concept",
     className: "connect",
   },
 ];
@@ -89,6 +89,7 @@ function BrandMark() {
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [signalAwake, setSignalAwake] = useState(false);
 
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
@@ -115,28 +116,47 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const range = root.scrollHeight - window.innerHeight;
+        root.style.setProperty("--scroll-progress", String(range > 0 ? Math.max(0, Math.min(1, window.scrollY / range)) : 0));
+      });
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <main id="home">
+      <div className="scroll-progress" aria-hidden="true" />
       <div className="ambient ambient-one" aria-hidden="true" />
       <div className="ambient ambient-two" aria-hidden="true" />
 
       <header className="site-header">
         <div className="header-inner">
           <BrandMark />
+          <div className="header-signal"><span /> SOMETHING IS SURFACING</div>
           <button
             className="menu-toggle"
             type="button"
             aria-label={menuOpen ? "Close navigation" : "Open navigation"}
             aria-expanded={menuOpen}
+            aria-controls="primary-navigation"
             onClick={() => setMenuOpen((open) => !open)}
           >
             {menuOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
-          <nav className={menuOpen ? "nav-links nav-open" : "nav-links"} aria-label="Main navigation">
-            <a href="#vision" onClick={closeMenu}>The idea</a>
-            <a href="#ecosystem" onClick={closeMenu}>Ecosystem</a>
+          <nav id="primary-navigation" className={menuOpen ? "nav-links nav-open" : "nav-links"} aria-label="Main navigation">
+            <a href="#vision" onClick={closeMenu}>The signal</a>
+            <a href="#reveal" onClick={closeMenu}>Meet NESI</a>
             <a href="#principles" onClick={closeMenu}>Our principles</a>
             <a className="nav-cta" href="#contact" onClick={closeMenu}>
               Get in touch <ArrowUpRight size={15} />
@@ -156,18 +176,16 @@ function App() {
         </div>
         <div className="hero-content page-width">
           <div className="eyebrow hero-eyebrow"><span className="status-dot" /> AN INDEPENDENT AI STUDIO</div>
-          <h1 id="hero-title">Intelligence,<br /><em>in motion.</em></h1>
-          <p className="hero-copy">
-            A calmer, more connected way to work with AI.
-            Built around your ideas, your tools, and your control.
-          </p>
+          <p className="hero-pretitle">A note from beneath the noise</p>
+          <h1 id="hero-title">Something has been<br /><em>under the surface.</em></h1>
+          <p className="hero-copy">Everyone is racing to make AI louder.<br className="desktop-break" /> We went looking for what was missing.</p>
           <div className="hero-actions">
-            <a className="button button-light" href="#vision">Discover NESI <ArrowDownRight size={17} /></a>
-            <a className="text-link" href="#ecosystem">Explore the ecosystem <ArrowRight size={16} /></a>
+            <a className="button button-light" href="#vision">Follow the signal <ArrowDownRight size={17} /></a>
+            <span className="hero-aside">A different kind of intelligence<br />is beginning to take shape.</span>
           </div>
           <div className="hero-note">
             <Waves size={16} strokeWidth={1.5} />
-            <span>Look beyond the surface.</span>
+            <span>Nothing stays hidden forever.</span>
           </div>
         </div>
         <a className="scroll-cue" href="#vision" aria-label="Scroll to the next section">
@@ -181,27 +199,55 @@ function App() {
             <span className="kicker-line" /> THE IDEA
           </div>
           <div className="intro-main" data-reveal>
-            <h2>AI shouldn't be<br />another <span>place to go.</span></h2>
+            <h2>The world kept adding intelligence.<br /><span>It forgot to connect it.</span></h2>
             <div className="intro-copy-row">
               <p className="large-copy">
-                The world doesn't need another hundred disconnected AI tabs. It needs thoughtful tools that work together and help people move from <em>“what if?”</em> to <em>“it's done.”</em>
+                A new model. Another app. One more tab. The future kept arriving in pieces. The tools got impressive, but the space between them stayed frustrating.
               </p>
               <p className="support-copy">
-                NESI is an independent project exploring what that future could look like: useful intelligence, connected experiences, and technology that leaves the steering wheel in your hands.
+                So we went looking for what was missing: a connective layer between what you mean and what needs doing, built around people rather than hype.
               </p>
             </div>
           </div>
         </div>
       </section>
 
+
+      <section className="descent section-pad" id="descent">
+        <div className="descent-background" aria-hidden="true"><div className="descent-haze" /><div className="descent-rings" /></div>
+        <div className="page-width descent-content" data-reveal>
+          <p className="section-kicker"><span className="kicker-line" /> CHAPTER 02 · THE DESCENT</p>
+          <h2>So we stopped<br />looking at the surface.</h2>
+          <p className="descent-copy">What if AI wasn't another destination? What if it could become the connective layer between what you mean and what needs doing?</p>
+          <p className="descent-small">LESS PROMPT CHASING. MORE FOLLOW-THROUGH.</p>
+          <a className="quiet-link" href="#reveal">Keep going. There's something here <ArrowRight size={15} /></a>
+        </div>
+        <span className="descent-coordinate" aria-hidden="true">SIGNAL FOUND / 02</span>
+      </section>
+      <section className={signalAwake ? "reveal-section signal-awake" : "reveal-section"} id="reveal">
+        <div className="reveal-art" aria-hidden="true"><div className="reveal-halo halo-one" /><div className="reveal-halo halo-two" /><div className="reveal-halo halo-three" /><div className="reveal-creature"><span /></div><div className="reveal-waterline" /><div className="reveal-particles"><i /><i /><i /><i /><i /><i /><i /></div></div>
+        <div className="page-width reveal-content" data-reveal>
+          <p className="section-kicker"><span className="kicker-line" /> CHAPTER 03 · THE EMERGENCE</p>
+          <p className="reveal-overline">THE SIGNAL HAS A NAME</p>
+          <h2 className="reveal-word" aria-label="NESI">NESI<span>.</span></h2>
+          <div className="reveal-bottom">
+            <h3>It was never about<br />making more noise.</h3>
+            <div>
+              <p>NESI is an independent AI studio exploring a more connected way to work with intelligence. Not another island of tools, but a direction toward systems that work together while people stay in control.</p>
+              <button className="button button-outline" type="button" onClick={() => setSignalAwake(true)} aria-pressed={signalAwake}>{signalAwake ? "Signal acknowledged" : "Bring the signal to life"} {signalAwake ? <Check size={16} /> : <ArrowUpRight size={16} />}</button>
+            </div>
+          </div>
+          <div className="reveal-footnote"><span>NOT A FINISHED PROMISE.</span><span>A DIRECTION WE'RE BUILDING TOWARD.</span></div>
+        </div>
+      </section>
       <section className="ecosystem section-pad" id="ecosystem">
         <div className="page-width">
           <div className="section-heading" data-reveal>
             <div>
-              <div className="section-kicker"><span className="kicker-line" /> A CONNECTED ECOSYSTEM</div>
-              <h2>Different tools.<br /><span>One clearer direction.</span></h2>
+              <div className="section-kicker"><span className="kicker-line" /> THE FIRST WAVE</div>
+              <h2>A big idea starts.<br /><span>With one useful thing.</span></h2>
             </div>
-            <p>Not a pile of features. A set of focused experiences designed to make the pieces fit together.</p>
+            <p>NESI is a journey, not a catalogue of imaginary products. Here is the first focus and what remains a future direction.</p>
           </div>
           <div className="product-grid">
             {products.map((product) => {
@@ -239,8 +285,8 @@ function App() {
         <div className="page-width manifesto-grid">
           <div className="manifesto-heading" data-reveal>
             <div className="section-kicker"><span className="kicker-line" /> WHAT WE BELIEVE</div>
-            <h2>Depth over noise.<br /><span>Progress over hype.</span></h2>
-            <p>Our north star is simple: technology should give people more agency, not more things to manage.</p>
+            <h2>Depth over hype.<br /><span>Agency over automation.</span></h2>
+            <p>The best technology gives people more room to think, make, and decide. Everything else is details.</p>
             <div className="manifesto-stamp"><Waves size={20} /><span>BUILT WITH INTENTION</span></div>
           </div>
           <div className="principle-list">
@@ -266,10 +312,10 @@ function App() {
         <div className="contact-panel page-width" data-reveal>
           <div className="contact-glow" aria-hidden="true" />
           <div className="section-kicker"><span className="kicker-line" /> THE NEXT CHAPTER</div>
-          <h2>Good ideas travel<br /><em>further together.</em></h2>
-          <p>We're at the beginning. If you're curious about what NESI could become, we'd like to hear from you.</p>
-          <a className="button button-light" href="mailto:hello@nesi.ai?subject=Hello%20NESI">
-            Start a conversation <ArrowUpRight size={17} />
+          <h2>The lake was quiet.<br /><em>That does not mean it was empty.</em></h2>
+          <p>We are bringing the first signal into the open, one useful piece at a time. Curious builders and thoughtful collaborators are welcome here.</p>
+          <a className="button button-light" href="https://github.com/yesu166/NESI-Agentic-AI" target="_blank" rel="noreferrer">
+            Explore the foundations <ArrowUpRight size={17} />
           </a>
           <span className="contact-orbit orbit-one" aria-hidden="true" />
           <span className="contact-orbit orbit-two" aria-hidden="true" />
