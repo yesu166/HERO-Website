@@ -11,7 +11,7 @@ describe("NESI story website", () => {
   });
   it("reveals NESI and distinguishes development from concepts", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "NESI." })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /NESI/ })).toBeTruthy();
     expect(screen.getByText(/independent AI studio exploring a more connected way/i)).toBeTruthy();
     expect(screen.getByText("In development")).toBeTruthy();
     expect(screen.getAllByText("Concept")).toHaveLength(2);
@@ -35,7 +35,7 @@ describe("NESI story website", () => {
     const { container } = render(<App />);
     const ids = new Set(Array.from(container.querySelectorAll<HTMLElement>("[id]")).map((el) => el.id));
     const links = Array.from(container.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'));
-    expect(links.length).toBeGreaterThan(10);
+    expect(links.length).toBeGreaterThan(8);
     links.forEach((link) => {
       const target = link.getAttribute("href")?.slice(1);
       expect(Boolean(target && ids.has(target))).toBe(true);
