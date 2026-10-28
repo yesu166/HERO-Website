@@ -17,7 +17,7 @@ npm test
 npm run build
 npm run preview
 ```
-The production bundle is written to `dist/`. GitHub Actions runs component/navigation tests and a production build on pushes.
+The production bundle is written to `dist/`. GitHub Actions runs component/navigation tests and a production build on pushes. The Pages workflow deploys automatically once GitHub Pages is enabled for the repository.
 
 ## Design and status
 - Deep lake greens, mineral-green light, restrained glassmorphism, and editorial typography.
