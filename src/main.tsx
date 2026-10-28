@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -334,3 +335,9 @@ function App() {
 }
 
 export default App;
+
+// Vite loads this file as the browser entry point. Unit tests can import App without a #root node.
+const mount = document.getElementById("root");
+if (mount) {
+  createRoot(mount).render(<App />);
+}
