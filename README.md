@@ -24,3 +24,6 @@ The production bundle is written to `dist/`. GitHub Actions runs component/navig
 - Responsive menu, focus states, semantic landmarks, and reduced-motion support.
 - Product status is explicit: NESI Agent is in development; other directions are concepts.
 - Project links point to `https://github.com/yesu166/NESI-Agentic-AI`.
+
+## GitHub Pages
+The build and tests run independently on every push. To publish with GitHub Pages, first open **Repository Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**. Then open **Actions → Deploy portfolio to GitHub Pages → Run workflow**. This one-time repository setting must be enabled by a repository admin; the connected workflow cannot create the Pages site through the current GitHub integration permissions.
