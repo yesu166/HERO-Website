@@ -229,7 +229,7 @@ button { font: inherit; }
 /* NESI narrative identity and chapter-based reveal */
 :root { --scroll-progress:0; scroll-padding-top:90px; }
 .scroll-progress { position:fixed; top:0; left:0; z-index:100; width:100%; height:2px; pointer-events:none; background:linear-gradient(90deg,#a5e9c4,#5eac95); transform:scaleX(var(--scroll-progress)); transform-origin:left center; }
-.hero-landscape { background:#071412 url("/abyss.svg") center 54% / cover no-repeat; }
+.hero-landscape { background:#071412 url("./abyss.svg") center 54% / cover no-repeat; }
 .hero-landscape > .moon-glow,.hero-landscape > .mountain,.hero-landscape > .lake-surface,.hero-landscape > .lake-reflection,.hero-landscape > .shoreline { display:none; }
 .hero-landscape::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(4,14,12,.92) 0%,rgba(4,14,12,.76) 33%,rgba(4,14,12,.23) 68%,rgba(4,14,12,.08) 100%),linear-gradient(0deg,#071412 0%,transparent 27%,rgba(4,12,11,.35) 100%); }
 .scene-fog { position:absolute; right:-8%; bottom:18%; width:70%; height:22%; border-radius:50%; background:rgba(146,224,183,.12); filter:blur(52px); animation:fog-drift 19s ease-in-out infinite alternate; }
