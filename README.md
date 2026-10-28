@@ -1,26 +1,14 @@
-# HERO Website
+# NESI — Intelligence in motion
 
-A cinematic portfolio with a scroll-controlled hero film, restrained glass UI, and a custom glasswing butterfly cursor.
+A full visual rebrand of HERO-Website into the NESI AI studio landing page. The concept pairs a moody lake-inspired atmosphere with restrained glassmorphism, editorial typography, and subtle motion.
 
-## Included now
+## Stack
 
-- React + TypeScript + Vite portfolio shell.
-- 8-second H.264 hero video committed under `public/media/`.
-- Native video playback scrubbed from scroll progress.
-- Black fallback if video metadata cannot load.
-- Warm cream-gold light around the butterfly cursor, soft wing motion, smooth tracking, click-to-land and take-off.
-- Glass navigation, subtle atmospheric grain, process, selected work, experiments, and footer sections.
-- Responsive layouts and reduced-motion handling.
-
-## Hero video
-
-The current clip is stored at:
-
-`public/media/Character_animation_for_digital_…_20261023075818_2K_upscaled.mp4`
-
-It is loaded by the hero as a background layer. Its 8-second timeline maps to the hero's scroll progress; scrolling back scrubs the clip in reverse. The video remains separate from the website typography and UI. We do not need to isolate the character from the landscape for this first version because the source clip already composites them together.
-
-For a future replacement, preserve the existing filename or update the `src` in `src/main.tsx`. Recommended export: H.264 MP4, 16:9, 24–30 fps, muted, frequent keyframes for smooth seeking, and optimized for web delivery.
+- React 19 + TypeScript
+- Vite 7
+- Lucide icons
+- Responsive CSS, native smooth scrolling, and Intersection Observer reveals
+- Custom CSS landscape illustration, no large background video or 3D runtime
 
 ## Run locally
 
@@ -29,16 +17,23 @@ npm install
 npm run dev
 ```
 
-Build:
+## Production build
 
 ```bash
 npm run build
+npm run preview
 ```
 
-GitHub Pages build:
+The production bundle is written to `dist/`.
 
-```bash
-npm run build -- --mode github-pages
-```
+## Design notes
 
-GitHub Pages deployment is configured in `.github/workflows/deploy-pages.yml`. The first deployment requires Pages to be enabled for this repository with **Settings → Pages → Build and deployment → Source: GitHub Actions**. The workflow cannot enable that repository setting because the connected GitHub Actions token lacks the required repository administration permission.
+- Dark lake palette with deep pine, mineral teal, and pale mint.
+- Glassmorphism is reserved for navigation and small surfaces, with editorial layout and high-contrast typography doing most of the work.
+- Responsive mobile navigation and reduced-motion support are included.
+- The ecosystem cards are clearly labelled as product directions, not released capabilities.
+- The contact link currently opens an email draft at `hello@nesi.ai`; replace this address if needed.
+
+## Deployment
+
+The project can be deployed as a static Vite site on Vercel or another static host. Use the default `npm run build` command. The existing Vite config also retains the GitHub Pages base mode via `npm run build -- --mode github-pages`.
