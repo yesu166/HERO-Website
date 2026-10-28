@@ -11,7 +11,7 @@ describe("NESI story website", () => {
   });
   it("reveals NESI and distinguishes development from concepts", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "NESI", exact: true })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "NESI" })).toBeTruthy();
     expect(screen.getByText(/independent AI studio exploring a more connected way/i)).toBeTruthy();
     expect(screen.getByText("In development")).toBeTruthy();
     expect(screen.getAllByText("Concept")).toHaveLength(2);
